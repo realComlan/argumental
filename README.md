@@ -1,2 +1,2 @@
-# Argumenta
+# Argumental
 
