@@ -1,6 +1,4 @@
-import argumental
+from argumentale import *
 
 if __name__ == "__main__":
-	solverManager = SolverManager.get_instance()
-	solverManager.solve(method=Solver.SATBASED)
-	solverManager.solve(method=Solver.MATRIXBASED)
+	SolverManager.get_instance().solve()
