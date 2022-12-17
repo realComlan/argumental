@@ -171,10 +171,10 @@ class SATBasedSolver:
 					return self.solution_for_print(cf_set)
 				else:
 					arg_in_extension = self.arguments[arg] in cf_set
-				if problem==SATBasedSolver.CREDULOUS and arg_in_extension:
-					return "YES"
-				elif problem==SATBasedSolver.SKEPTICAL and not arg_in_extension:
-					return "NO"
+					if problem==SATBasedSolver.CREDULOUS and arg_in_extension:
+						return "YES"
+					elif problem==SATBasedSolver.SKEPTICAL and not arg_in_extension:
+						return "NO"
 		solver.delete()
 		if problem==SATBasedSolver.SOME_EXTENSION:
 			return "NO"
