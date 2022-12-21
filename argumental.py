@@ -3,7 +3,6 @@ from pysat.formula import CNF
 
 class SolverManager:
 	instance = None
-	solver = None
 	help_string = """
 	This is Argumental 1.0. Thanks for using it.	
 	"""
