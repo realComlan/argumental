@@ -141,8 +141,8 @@ class SATBasedSolver:
 		reversed_arg = dict()
 		for key, val in self.arguments.items():
 			reversed_arg[val] = key
-		solution = [reversed_arg[i] for i in solution if i > 0]
-		solution = str(solution).replace("'","")
+		solution = str([reversed_arg[i] for i in solution if i > 0])
+		solution = solution.replace("'","")
 		solution = solution.replace(" ","")
 		return solution
 
