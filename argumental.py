@@ -145,35 +145,28 @@ class SATBasedSolver:
 		solution = solution.replace(" ","")
 		return solution
 
-	def conflict_free_sets(self):
-		if self.cf_sets != None:
-			return
+	def conflict_free_sets_CNF(self):
 		cnf = CNF()
 		for (arg, attackers) in self.attackers_list.items():
 			for att in attackers:
 				cnf.append([-int(arg), -int(att)])
-		solver = Solver(name="g3", bootstrap_with=cnf.clauses)
-		solved = solver.solve()
-		if solved:
-			self.cf_sets=[s for s in solver.enum_models()]
-		else:
-			self.cf_sets=[]
-		solver.delete()
+		return cnf
 
 	def call_SAT_oracle(self, cnf, problem, arg):
 		solver = Solver(name=SATBasedSolver.NAME, bootstrap_with=cnf.clauses)
-		for cf_set in self.cf_sets:
-			# Set assumption
-			solved, _ = solver.propagate(assumptions=cf_set)
-			if solved:
-				if problem==SATBasedSolver.SOME_EXTENSION:
-					return self.solution_for_print(cf_set)
-				else:
-					arg_in_extension = self.arguments[arg] in cf_set
+		solved = solver.solve()
+		if solved:
+			if problem==SATBasedSolver.SOME_EXTENSION:
+				return self.solution_for_print(solver.get_model())
+			else:
+				for model in solver.enum_models():
+					arg_in_extension = self.arguments[arg] in model
 					if problem==SATBasedSolver.CREDULOUS and arg_in_extension:
 						return "YES"
 					elif problem==SATBasedSolver.SKEPTICAL and not arg_in_extension:
-						return "NO"
+						return "NO" 
+		else:
+			return "NO"
 		solver.delete()
 		if problem==SATBasedSolver.SOME_EXTENSION:
 			return "NO"
@@ -196,11 +189,8 @@ class SATBasedSolver:
 		complete extensions	
 		"""
 		self.build_defenders_list()
-		self.conflict_free_sets()
-		if not self.cf_sets:
-			return "NO"
 		# Build the clauses
-		cnf = CNF()
+		cnf = self.conflict_free_sets_CNF()
 		for argument in self.arguments.values():
 			# In the complete semantics, each argument which is defended
 			# must have the same truth value as all its defenders. They
@@ -224,11 +214,8 @@ class SATBasedSolver:
 		problem is SATBasedSolver.SOME_EXTENSION | SATBasedSolver.CREDULOUS | SATBasedSolver.SKEPTICAL
 		arg is the argument of which we are checking acceptability
 		"""
-		self.conflict_free_sets()
-		if not self.cf_sets:
-			return "NO"
 		# Build the clauses
-		cnf = CNF()
+		cnf = self.conflict_free_sets_CNF()
 		for argument in self.arguments.values():
 			# If a certain argument is not accepted then
 			# one its attackers has been accepted.
