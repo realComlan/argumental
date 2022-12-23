@@ -65,7 +65,7 @@ class SolverManager:
 
 class SATBasedSolver:
 
-	NAME="g3"
+	NAME="g4"
 	SOME_EXTENSION="SE"
 	CREDULOUS="DC"
 	SKEPTICAL="DS"
