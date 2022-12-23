@@ -63,39 +63,6 @@ class SolverManager:
 		print(self.solver.solve(self.problem, self.argument))
 
 
-class MatrixSolver:
-
-	def __init__(self):
-		self.arguments = dict()
-		self.attacks = np.array()
-
-	def add_argument(self, arg):
-		if str(arg) not in self.arguments:
-			self.arguments[str(arg)] = len(self.arguments)+1
-
-	def add_attack(self, attack):
-		pass
-
-	def prepare_attack_matrix(self):
-		n=len(self.arguments)
-		self.attack_matrix=np.zeros(n,n)
-	
-	def conflict_free_sets(self):
-		result=np.array()
-		n=len(self.arguments)
-		N=1<<(n-1)
-		for i in range(N):
-			ss=np.array()
-			for j in range(n):
-				if i&(1<<j):
-					ss=np.append(ss,[j])
-			result=np.append(result,ss)
-		# to continue
-
-	def characteristic_function(self):
-		pass
-
-
 class SATBasedSolver:
 
 	NAME="g3"
