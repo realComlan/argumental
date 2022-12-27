@@ -1,4 +1,3 @@
-import pyeda
 from pysat.solvers import Solver
 from pysat.formula import CNF 
 from collections import defaultdict
@@ -157,15 +156,10 @@ class SATBasedSolver:
 		solved = solver.solve()
 		if solved:
 			if problem==SATBasedSolver.SOME_EXTENSION:
-				i=0
-				from time import time
-				t=time()
 				for model in solver.enum_models():
 					if self.contains_all_defended(model, i):
-						#solver.delete()
-						print("found one at", i, "after", time()-t)
-						print(self.solution_for_print(model))
-					i+=1
+						solver.delete()
+						return self.solution_for_print(model)
 			else:
 				for model in solver.enum_models():
 					if self.contains_all_defended(model):
@@ -187,8 +181,7 @@ class SATBasedSolver:
 		elif problem==SATBasedSolver.SKEPTICAL:
 			return "YES"
 
-	def contains_all_defended(self, model, i=0):
-		#print("############# ", i)
+	def contains_all_defended(self, model):
 		in_model=defaultdict(lambda: 0)
 		for arg in model:
 			if arg > 0:
@@ -214,13 +207,10 @@ class SATBasedSolver:
 		return True
 
 	def _contains_all_defended(self, model, i=0):
-		print("############# ", i)
-		#print("checking for contains all defended:", model)
 		in_model=defaultdict(lambda: 0)
 		for arg in model:
 			if arg > 0:
 				in_model[arg]=1
-		print("how many in model: ", len(in_model), "over", len(model))
 		for arg in model:
 			# We check dead arguments only, i.e. negated arguments, arguments outside of model. 
 			# Basically we wanna check that each dead argument is undefended against
@@ -307,5 +297,4 @@ class SATBasedSolver:
 			cnf.append(cl)
 
 		return self.call_SAT_oracle_for_stable(cnf, problem, arg)
-
 
