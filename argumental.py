@@ -63,7 +63,6 @@ class SolverManager:
 	def solve(self):
 		print(self.solver.solve(self.problem, self.argument))
 
-
 class SATBasedSolver:
 
 	NAME="g4"
@@ -157,7 +156,7 @@ class SATBasedSolver:
 		if solved:
 			if problem==SATBasedSolver.SOME_EXTENSION:
 				for model in solver.enum_models():
-					if self.contains_all_defended(model, i):
+					if self.contains_all_defended(model):
 						solver.delete()
 						return self.solution_for_print(model)
 			else:
@@ -204,39 +203,6 @@ class SATBasedSolver:
 						# no, he is not. Then, this is not a complete extension.
 						if not attacked:
 							return False 
-		return True
-
-	def _contains_all_defended(self, model, i=0):
-		in_model=defaultdict(lambda: 0)
-		for arg in model:
-			if arg > 0:
-				in_model[arg]=1
-		for arg in model:
-			# We check dead arguments only, i.e. negated arguments, arguments outside of model. 
-			# Basically we wanna check that each dead argument is undefended against
-			# at least one of its attackers. That would justify its deadness. Otherwise
-			# Otherwise this model is not describing a complete extension since one defended argument
-			# is outside the model.
-			if arg < 0:
-				defended = False
-				for attack, defenders in self.defenders_list[-arg].items():
-					for defender in defenders:
-						# if arg is defended against this attack
-						# we continue checking for the other attacks it receives
-						if in_model[defender]:
-							defended = True
-							break
-					# if this argument IS NOT defended against the current attack
-					# then it's fine that it is out of the model
-					if not defended:
-						break
-				# if this argument IS defended by an argument in the model
-				# then it should be in the model as well. This model is thus not a complete extension.
-				# So we return False.
-				if defended:
-					return False
-		# No argument outside of the model was defended
-		# so we return False
 		return True
 
 	def build_defenders_list(self):
