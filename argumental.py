@@ -100,9 +100,12 @@ class SATBasedSolver:
 		attacker, attacked = self.arguments[attack[0]], self.arguments[attack[1]]
 		if attacked not in self.attackers_list:
 			self.attackers_list[attacked] = [attacker] 
-			self.attacked_list[attacker] = [attacked] 
 		else:
 			self.attackers_list[attacked].append(attacker)
+			
+		if attacker not in self.attacked_list:
+			self.attacked_list[attacker] = [attacked] 
+		else:
 			self.attacked_list[attacker].append(attacked)
 
 	def solution_for_print(self, solution):
